@@ -12,12 +12,12 @@ import java.time.Instant;
 @Data
 public class Film {
     private int id;
-    @NotBlank
+
     private String name;
 
     private String description;
     private Instant releaseDate;
 
-    @Positive
+
     private Duration duration;
 }
