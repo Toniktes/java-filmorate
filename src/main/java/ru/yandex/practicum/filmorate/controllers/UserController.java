@@ -16,7 +16,7 @@ public class UserController {
 
     private final Map<Integer, User> users = new HashMap<>();
 
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/users")
     public User create(@Valid @RequestBody User user) throws ValidationException {
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
@@ -36,7 +36,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping(value = "/user")
+    @PutMapping(value = "/users")
     public User update(@Valid @RequestBody User user) throws ValidationException {
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");

@@ -17,7 +17,7 @@ public class Film {
 
     private String description;
     private Instant releaseDate;
-    
+
     @Positive
     private Duration duration;
 }

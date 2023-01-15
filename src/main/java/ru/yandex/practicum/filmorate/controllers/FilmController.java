@@ -20,7 +20,7 @@ public class FilmController {//()
     private static final String CONTROL_DATE = "1985-12-28T00:00:00Z";
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
-    @PostMapping(value = "/film")
+    @PostMapping(value = "/films")
     public Film create(@Valid @RequestBody Film film) throws ValidationException {
         if (film.getName().isBlank()) {
             throw new ValidationException("Название не может быть пустым");
@@ -40,7 +40,7 @@ public class FilmController {//()
         return film;
     }
 
-    @PutMapping(value = "/film")
+    @PutMapping(value = "/films")
     public Film update(@Valid @RequestBody Film film) throws ValidationException {
         if (film.getName().isBlank()) {
             throw new ValidationException("Название не может быть пустым");
