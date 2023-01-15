@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.controllers.UserController;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,7 +21,7 @@ public class UserControllerTest {
     @BeforeEach
     void beforeEach() {
         userController = new UserController();
-        user = new User(1, "Anton", "teslyaaanton@yandex.ru", "Horizont", Instant.parse("1993-04-09T00:00:00Z"));
+        user = new User(1, "Anton", "teslyaaanton@yandex.ru", "Horizont", LocalDate.parse("1993-04-09"));
     }
 
     @AfterEach
@@ -58,7 +59,7 @@ public class UserControllerTest {
 
     @Test
     void birthdayInFutureTest() {
-        user.setBirthday(Instant.parse("3000-04-09T00:00:00Z"));
+        user.setBirthday(LocalDate.parse("3000-04-09"));
         Assertions.assertThrows(ValidationException.class, () -> userController.create(user));
     }
 }

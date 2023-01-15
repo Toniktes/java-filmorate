@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
 
     @PostMapping(value = "/users")
-    public User create(@Valid @RequestBody User user) throws ValidationException {
+    public User create(@RequestBody User user) throws ValidationException {
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
         }
@@ -27,7 +28,7 @@ public class UserController {
         if (user.getName().isBlank()) {
             user.setName(user.getEmail());
         }
-        if (user.getBirthday().isAfter(Instant.now())) {
+        if (user.getBirthday().isAfter(LocalDate.now().plusDays(1))) {
             throw new ValidationException("дата рождения не может быть в будущем");
         }
         users.put(user.getId(), user);
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/users")
-    public User update(@Valid @RequestBody User user) throws ValidationException {
+    public User update(@RequestBody User user) throws ValidationException {
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
         }
@@ -47,7 +48,7 @@ public class UserController {
         if (user.getName().isBlank()) {
             user.setName(user.getEmail());
         }
-        if (user.getBirthday().isAfter(Instant.now())) {
+        if (user.getBirthday().isAfter(LocalDate.now().plusDays(1))) {
             throw new ValidationException("дата рождения не может быть в будущем");
         }
         users.put(user.getId(), user);

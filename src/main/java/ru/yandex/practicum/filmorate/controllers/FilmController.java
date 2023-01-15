@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,14 +22,14 @@ public class FilmController {//()
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     @PostMapping(value = "/films")
-    public Film create(@Valid @RequestBody Film film) throws ValidationException {
+    public Film create(@RequestBody Film film) throws ValidationException {
         if (film.getName().isBlank()) {
             throw new ValidationException("Название не может быть пустым");
         }
         if (film.getDescription().length() > 200) {
             throw new ValidationException("Максимальная длина описания — 200 символов");
         }
-        if (film.getReleaseDate().isBefore(Instant.parse(CONTROL_DATE))) {
+        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
         }
         if (film.getDuration().getSeconds() <= 0) {
@@ -41,14 +42,14 @@ public class FilmController {//()
     }
 
     @PutMapping(value = "/films")
-    public Film update(@Valid @RequestBody Film film) throws ValidationException {
+    public Film update(@RequestBody Film film) throws ValidationException {
         if (film.getName().isBlank()) {
             throw new ValidationException("Название не может быть пустым");
         }
         if (film.getDescription().length() > 200) {
             throw new ValidationException("Максимальная длина описания — 200 символов");
         }
-        if (film.getReleaseDate().isBefore(Instant.parse(CONTROL_DATE))) {
+        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
         }
         if (film.getDuration().getSeconds() <= 0) {

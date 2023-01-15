@@ -7,17 +7,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @Data
 public class Film {
     private int id;
-
-    @NotBlank
     private String name;
-
     private String description;
-    private Instant releaseDate;
-
-    @Positive
+    private LocalDate releaseDate;
     private Duration duration;
 }
