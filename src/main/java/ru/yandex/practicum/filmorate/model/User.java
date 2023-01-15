@@ -14,12 +14,13 @@ public class User {
     private int id;
     private String name;
 
-
+    @Email
+    @NotBlank
     private String email;
 
-
+    @NotBlank
     private String login;
 
-
+    @Past
     private Instant birthday;
 }
