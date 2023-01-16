@@ -1,11 +1,9 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -14,12 +12,13 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-
-public class FilmController {//()
+@Slf4j
+@RestController
+public class FilmController {
 
     private final Map<Integer, Film> films = new HashMap<>();
-    private static final String CONTROL_DATE = "1985-12-28T00:00:00Z";
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
+    private static final String CONTROL_DATE = "1895-12-28";
+    private int generatorId = 0;
 
     @PostMapping(value = "/films")
     public Film create(@RequestBody Film film) throws ValidationException {
@@ -29,11 +28,14 @@ public class FilmController {//()
         if (film.getDescription().length() > 200) {
             throw new ValidationException("Максимальная длина описания — 200 символов");
         }
-        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
+        if (film.getReleaseDate().isBefore(LocalDate.parse(CONTROL_DATE))) {
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
         }
-        if (film.getDuration().getSeconds() <= 0) {
+        if (film.getDuration() <= 0) {
             throw new ValidationException("Продолжительность фильма должна быть положительной");
+        }
+        if (film.getId() == 0) {
+            film.setId(++generatorId);
         }
         films.put(film.getId(), film);
         log.debug("");
@@ -49,10 +51,10 @@ public class FilmController {//()
         if (film.getDescription().length() > 200) {
             throw new ValidationException("Максимальная длина описания — 200 символов");
         }
-        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
+        if (film.getReleaseDate().isBefore(LocalDate.parse(CONTROL_DATE))) {
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
         }
-        if (film.getDuration().getSeconds() <= 0) {
+        if (film.getDuration() <= 0) {
             throw new ValidationException("Продолжительность фильма должна быть положительной");
         }
         films.put(film.getId(), film);
