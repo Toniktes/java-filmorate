@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,7 +19,7 @@ class FilmControllerTest {
     @BeforeEach
     void beforeEach() {
         filmController = new ru.yandex.practicum.filmorate.controllers.FilmController();
-        film = new Film(1, "Фильм1", "Содержание", LocalDate.now(), Duration.ofHours(2));
+        film = new Film(1, "Фильм1", "Содержание", LocalDate.now(), 20);
     }
 
     @AfterEach
@@ -54,9 +53,9 @@ class FilmControllerTest {
 
     @Test
     void filmHaveNegativeOrNullDuration() {
-        film.setDuration(Duration.ofSeconds(0));
+        film.setDuration(0);
         assertThrows(ValidationException.class, () -> filmController.create(film));
-        film.setDuration(Duration.ofSeconds(-1));
+        film.setDuration(-1);
         assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 }
