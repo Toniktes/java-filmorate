@@ -60,6 +60,9 @@ public class UserController {
             log.info("Задано пустое имя, логин будет использован как имя");
             user.setName(user.getEmail());
         }
+        if(users.get(user.getId()) == null) {
+            throw new ValidationException("Попытка обновить данные не существующего пользователя");
+        }
         if (user.getId() == 0) {
             user.setId(++generatorId);
         }

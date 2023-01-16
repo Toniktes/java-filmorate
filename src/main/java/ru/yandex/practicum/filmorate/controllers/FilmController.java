@@ -53,6 +53,12 @@ public class FilmController {
         if (film.getDuration() <= 0) {
             throw new ValidationException("Продолжительность фильма должна быть положительной");
         }
+        if(films.get(film.getId()) == null) {
+            throw new ValidationException("Попытка обновить данные не существующего фильма");
+        }
+        if (film.getId() == 0) {
+            film.setId(++generatorId);
+        }
         films.put(film.getId(), film);
         log.debug("");
         log.info("Фильм добавлен: " + film);
