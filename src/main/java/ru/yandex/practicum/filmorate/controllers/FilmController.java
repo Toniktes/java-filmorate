@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 @Slf4j
@@ -66,7 +68,7 @@ public class FilmController {
     }
 
     @GetMapping("/films")
-    public Map<Integer, Film> findAll() {
-        return films;
+    public Collection<Film> findAll() {
+        return films.values();
     }
 }
