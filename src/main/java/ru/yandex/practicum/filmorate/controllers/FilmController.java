@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class FilmController {
     private int generatorId = 0;
 
     @PostMapping(value = "/films")
-    public Film create(@RequestBody Film film) throws ValidationException {
+    public Film create(@Valid @RequestBody Film film) throws ValidationException {
         if (film.getName().isBlank()) {
             throw new ValidationException("Название не может быть пустым");
         }
@@ -42,7 +42,7 @@ public class FilmController {
     }
 
     @PutMapping(value = "/films")
-    public Film update(@RequestBody Film film) throws ValidationException {
+    public Film update(@Valid @RequestBody Film film) throws ValidationException {
         if (film.getName().isBlank()) {
             throw new ValidationException("Название не может быть пустым");
         }

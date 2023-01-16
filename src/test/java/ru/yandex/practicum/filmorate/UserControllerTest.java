@@ -37,7 +37,7 @@ public class UserControllerTest {
     void ifUserNameIsEmpty() throws ValidationException {
         user.setName("");
         userController.create(user);
-        assertEquals(user.getEmail(), user.getName());
+        assertEquals(user.getLogin(), user.getName());
     }
 
     @Test

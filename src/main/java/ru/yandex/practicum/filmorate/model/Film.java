@@ -5,8 +5,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -15,6 +13,8 @@ public class Film {
     private int id;
     private String name;
     private String description;
+    @NotBlank
     private LocalDate releaseDate;
+    @Positive
     private long duration;
 }
