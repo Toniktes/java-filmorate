@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.controllers.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.Duration;
@@ -13,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class FilmControllerTest {
-    ru.yandex.practicum.filmorate.controllers.FilmController filmController;
+    FilmController filmController;
     Film film;
 
     @BeforeEach
     void beforeEach() {
-        filmController = new ru.yandex.practicum.filmorate.controllers.FilmController();
+        filmController = new FilmController();
         film = new Film(1, "Фильм1", "Содержание", LocalDate.now(), 20);
     }
 
