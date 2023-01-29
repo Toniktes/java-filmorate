@@ -1,71 +1,34 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-@Slf4j
 @RestController
 public class FilmController {
 
-    private final Map<Integer, Film> films = new HashMap<>();
-    private static final String CONTROL_DATE = "1895-12-28";
-    private int generatorId = 0;
+    private final InMemoryFilmStorage inMemoryFilmStorage;
+
+    public FilmController(InMemoryFilmStorage inMemoryFilmStorage) {
+        this.inMemoryFilmStorage = inMemoryFilmStorage;
+    }
 
     @PostMapping(value = "/films")
-    public Film create(@Valid @RequestBody Film film) throws ValidationException {
-        validation(film);
-        generateId(film);
-        films.put(film.getId(), film);
-        log.debug("");
-        log.info("Фильм добавлен: " + film);
-        return film;
+    public Film create(@Valid @RequestBody Film film) {
+        return inMemoryFilmStorage.create(film);
     }
 
     @PutMapping(value = "/films")
-    public Film update(@Valid @RequestBody Film film) throws ValidationException {
-        validation(film);
-        if (films.get(film.getId()) == null) {
-            throw new ValidationException("Попытка обновить данные не существующего фильма");
-        }
-        generateId(film);
-        films.put(film.getId(), film);
-        log.debug("");
-        log.info("Фильм добавлен: " + film);
-        return film;
+    public Film update(@Valid @RequestBody Film film) {
+        return inMemoryFilmStorage.update(film);
     }
 
     @GetMapping("/films")
     public Collection<Film> findAll() {
-        return films.values();
-    }
-
-    private void generateId(Film film) {
-        if (film.getId() == 0) {
-            film.setId(++generatorId);
-        }
-    }
-
-    private void validation(Film film) throws ValidationException {
-        if (film.getName().isBlank()) {
-            throw new ValidationException("Название не может быть пустым");
-        }
-        if (film.getDescription().length() > 200) {
-            throw new ValidationException("Максимальная длина описания — 200 символов");
-        }
-        if (film.getReleaseDate().isBefore(LocalDate.parse(CONTROL_DATE))) {
-            throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
-        }
-        if (film.getDuration() <= 0) {
-            throw new ValidationException("Продолжительность фильма должна быть положительной");
-        }
+        return inMemoryFilmStorage.findAll();
     }
 }
 
