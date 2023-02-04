@@ -56,7 +56,7 @@ public class FilmService {
         filmStorage.deleteLike(filmId, userId);
     }
 
-    private Film getFilm(int filmId) {
+    public Film getFilm(int filmId) {
         Film film = filmStorage.getFilm(filmId);
         if (film == null) {
             throw new NotFoundException("Фильм с идентификатором " +

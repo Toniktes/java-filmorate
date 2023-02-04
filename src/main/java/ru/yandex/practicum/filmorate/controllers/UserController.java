@@ -32,14 +32,20 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         log.info("Получен запрос на обновление данных пользователя");
         User updateUser = userService.update(user);
-        log.info("Пользователь с идентификатором {}", updateUser.getId());
-        return userService.update(user);
+        log.info("Пользователь с идентификатором {} обновлен", updateUser.getId());
+        return updateUser;
     }
 
     @GetMapping
     public Collection<User> findAll() {
         log.info("Запрос на получение списка пользователей");
         return userService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable int id) {
+        log.info("Запрос на на получение пользователя id: {}", id);
+        return userService.getUser(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
@@ -57,13 +63,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<User> findFriends(@PathVariable int id){
+    public Collection<User> findFriends(@PathVariable int id) {
         log.info("Получен запрос на получение списка друзей пользователя с id: {}", id);
         return userService.getFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<User> findCommonFriends(@PathVariable int id, @PathVariable int otherId){
+    public Collection<User> findCommonFriends(@PathVariable int id, @PathVariable int otherId) {
         log.info("Получен запрос на получение списка общих друзей от пользователя с id: {} c пользователем id: {}",
                 id, otherId);
         return userService.getCommonFriends(id, otherId);

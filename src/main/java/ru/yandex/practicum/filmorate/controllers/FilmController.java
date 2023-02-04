@@ -36,6 +36,12 @@ public class FilmController {
         return updateFilm;
     }
 
+    @GetMapping("/{id}")
+    public Film getFilm(@PathVariable int id) {
+        log.info("Запрос на на получение фильма id: {}", id);
+        return filmService.getFilm(id);
+    }
+
     @GetMapping
     public Collection<Film> findAll() {
         log.info("Запрос на получение списка фильмов");
