@@ -16,7 +16,7 @@ public class FilmController {
 
     private final FilmService filmService;
 
-    public FilmController(@Autowired(required = false) FilmService filmService) {
+    public FilmController(@Autowired FilmService filmService) {
         this.filmService = filmService;
     }
 

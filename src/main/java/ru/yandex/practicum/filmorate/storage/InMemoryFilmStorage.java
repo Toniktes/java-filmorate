@@ -13,14 +13,21 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
+
     @Override
     public Film addFilm(Film film) {
         films.put(film.getId(), film);
         return film;
     }
+
     @Override
     public Film getFilm(int filmId) {
         return films.get(filmId);
+    }
+
+    @Override
+    public Map<Integer, Film> filmMap() {
+        return films;
     }
 
     @Override
@@ -34,7 +41,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        if(!films.containsKey(film.getId())) {
+        if (!films.containsKey(film.getId())) {
             throw new NotFoundException(String.format("Фильм с идентификатором %d не найден", film.getId()));
         }
         films.put(film.getId(), film);

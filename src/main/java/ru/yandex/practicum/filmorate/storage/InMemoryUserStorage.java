@@ -24,6 +24,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
+    public Map<Integer, User> userMap() {
+        return users;
+    }
+
+    @Override
     public Collection<User> getAllUsers() {
         Collection<User> allUsers = users.values();
         if (allUsers.isEmpty()) {

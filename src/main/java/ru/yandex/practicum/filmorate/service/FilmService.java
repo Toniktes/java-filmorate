@@ -5,23 +5,24 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class FilmService {
-    FilmStorage filmStorage;
-    UserService userService;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
     private static final String CONTROL_DATE = "1895-12-28";
     private int generatorId = 0;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, @Autowired(required = false) UserService userService) {
+    public FilmService(FilmStorage filmStorage, @Autowired UserStorage userStorage) {
         this.filmStorage = filmStorage;
-        this.userService = userService;
+        this.userStorage = userStorage;
     }
 
     public Film create(Film film) {
@@ -45,24 +46,18 @@ public class FilmService {
     }
 
     public void addLike(int filmId, int userId) {
-        Film film = getFilm(filmId);
-        User user = userService.getUser(userId);
+        validateLike(filmId, userId);
         filmStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(int filmId, int userId) {
-        Film film = getFilm(filmId);
-        User user = userService.getUser(userId);
+        validateLike(filmId, userId);
         filmStorage.deleteLike(filmId, userId);
     }
 
     public Film getFilm(int filmId) {
-        Film film = filmStorage.getFilm(filmId);
-        if (film == null) {
-            throw new NotFoundException("Фильм с идентификатором " +
-                    filmId + " не найден!");
-        }
-        return film;
+        return Optional.ofNullable(filmStorage.getFilm(filmId))
+                .orElseThrow(() -> new NotFoundException("Фильм с идентификатором " + filmId + " не зарегистрирован!"));
     }
 
     public Collection<Film> getMostPopularFilms(int count) {
@@ -83,5 +78,16 @@ public class FilmService {
             throw new ValidationException("Продолжительность фильма должна быть положительной");
         }
         generateId(film);
+    }
+
+    private void validateLike(int filmId, int userId) {
+        if (!filmStorage.filmMap().containsKey(filmId)) {
+            throw new NotFoundException("Фильм с идентификатором " +
+                    filmId + " не найден!");
+        }
+        if (!userStorage.userMap().containsKey(userId)) {
+            throw new NotFoundException("Пользователь с идентификатором " +
+                    filmId + " не найден!");
+        }
     }
 }

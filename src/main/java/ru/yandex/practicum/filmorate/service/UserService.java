@@ -12,15 +12,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
 @Service
 public class UserService {
-    UserStorage userStorage;
+    private final UserStorage userStorage;
     private int generatorId = 0;
 
     @Autowired
-    public UserService(@Autowired(required = false) UserStorage userStorage) {
+    public UserService(@Autowired UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -45,15 +46,13 @@ public class UserService {
     }
 
     public void addFriend(int userId, int friendId) {
-        User user = getUser(userId);
-        User friend = getUser(friendId);
+        validateId(userId, friendId);
         userStorage.addFriend(userId, friendId);
     }
 
     public void deleteFriend(int userId, int friendId) {
-        User user = getUser(userId);
-        User friend = getUser(friendId);
-        userStorage.deleteFriend(user.getId(), friend.getId());
+        validateId(userId, friendId);
+        userStorage.deleteFriend(userId, friendId);
     }
 
     public Collection<User> getFriends(int userId) {
@@ -66,12 +65,8 @@ public class UserService {
     }
 
     public User getUser(int userId) {
-        User user = userStorage.getUser(userId);
-        if (user == null) {
-            throw new NotFoundException("Пользователь с идентификатором " +
-                    userId + " не зарегистрирован!");
-        }
-        return user;
+        return Optional.ofNullable(userStorage.getUser(userId))
+                .orElseThrow(() -> new NotFoundException("Пользователь с идентификатором " + userId + " не зарегистрирован!"));
     }
 
     public Collection<User> getCommonFriends(int userID, int otherId) {
@@ -107,5 +102,16 @@ public class UserService {
             user.setName(user.getLogin());
         }
         generateId(user);
+    }
+
+    private void validateId(int userId, int friendId) {
+        if (!userStorage.userMap().containsKey(userId)) {
+            throw new NotFoundException("Пользователь с идентификатором " +
+                    userId + " не найден!");
+        }
+        if (!userStorage.userMap().containsKey(friendId)) {
+            throw new NotFoundException("Пользователь с идентификатором " +
+                    friendId + " не найден!");
+        }
     }
 }
