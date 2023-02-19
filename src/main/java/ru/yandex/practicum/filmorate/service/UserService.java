@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -21,7 +22,7 @@ public class UserService {
     private int generatorId = 0;
 
     @Autowired
-    public UserService(@Autowired UserStorage userStorage) {
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -105,13 +106,18 @@ public class UserService {
     }
 
     private void validateId(int userId, int friendId) {
-        if (!userStorage.userMap().containsKey(userId)) {
+       /* if (!userStorage.userMap().containsKey(userId)) {
             throw new NotFoundException("Пользователь с идентификатором " +
                     userId + " не найден!");
         }
         if (!userStorage.userMap().containsKey(friendId)) {
             throw new NotFoundException("Пользователь с идентификатором " +
                     friendId + " не найден!");
-        }
+        }*/
+
+        Optional.ofNullable(userStorage.getUser(userId))
+                .orElseThrow(() -> new NotFoundException("Пользователь с идентификатором " + userId + " не зарегистрирован!"));
+        Optional.ofNullable(userStorage.getUser(friendId))
+                .orElseThrow(() -> new NotFoundException("Пользователь с идентификатором " + friendId + " не зарегистрирован!"));
     }
 }

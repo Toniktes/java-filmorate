@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -20,7 +21,7 @@ public class FilmService {
     private int generatorId = 0;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, @Autowired UserStorage userStorage) {
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, @Qualifier("UserDbStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
@@ -81,13 +82,18 @@ public class FilmService {
     }
 
     private void validateLike(int filmId, int userId) {
-        if (!filmStorage.filmMap().containsKey(filmId)) {
+        /*if (!filmStorage.filmMap().containsKey(filmId)) {
             throw new NotFoundException("Фильм с идентификатором " +
                     filmId + " не найден!");
         }
         if (!userStorage.userMap().containsKey(userId)) {
             throw new NotFoundException("Пользователь с идентификатором " +
                     filmId + " не найден!");
-        }
+        }*/
+
+        Optional.ofNullable(filmStorage.getFilm(filmId))
+                .orElseThrow(() -> new NotFoundException("Фильм с идентификатором " + filmId + " не зарегистрирован!"));
+        Optional.ofNullable(userStorage.getUser(userId))
+                .orElseThrow(() -> new NotFoundException("Пользователь с идентификатором " + userId + " не зарегистрирован!"));
     }
 }
