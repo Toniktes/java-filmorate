@@ -1,7 +1,7 @@
 # java-filmorate
 Схема БД.
 
-![Схема БД](https://user-images.githubusercontent.com/78084673/220072035-ebdc66f6-4b47-40c1-9616-a4bae953216e.png)
+![Схема БД](https://user-images.githubusercontent.com/78084673/220184889-469159e9-f6ed-4a98-94bf-c37e04f21145.png)
 ```
 Код для dbdiagram.io (https://dbdiagram.io)
 Table Film {
@@ -30,13 +30,13 @@ Table Users {
 
 Table Likes {
   likeId int [pk, increment] 
-  userId int [ref: - Users.userId]
-  filmId int [ref: - Film.filmId]
+  userId int [ref: > Users.userId]
+  filmId int [ref: > Film.filmId]
 }
 
 Table FriendList {
   friendListId int [pk, increment]
-  userId int [ref: - Users.userId]
+  userId int [ref: > Users.userId]
   friendID int
   status bool 
 }
@@ -48,7 +48,7 @@ Table Genre {
 
 Table GenreLine {
   genreLineId int [pk, increment]
-  filmId int [ref: - Film.filmId]
-  genreId int [ref: - Genre.genreId]
+  filmId int [ref: > Film.filmId]
+  genreId int [ref: > Genre.genreId]
 }
 ```
