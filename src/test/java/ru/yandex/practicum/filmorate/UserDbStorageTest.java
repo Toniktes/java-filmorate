@@ -48,6 +48,7 @@ public class UserDbStorageTest {
                 LocalDate.of(2020, 2, 17),
                 new ArrayList<>());
     }
+
     @AfterEach
     public void afterEach() {
         user1 = null;
@@ -58,14 +59,14 @@ public class UserDbStorageTest {
 
     @Test
     public void getUserTest() {
-        User dbUser = userDbStorage.addUser(user1);
-        assertThat(dbUser).hasFieldOrPropertyWithValue("id", 1);
+        User dbUser = userDbStorage.addUser(user3);
+        assertThat(dbUser).hasFieldOrPropertyWithValue("id", 3);
     }
 
     @Test
     void getAllUsersTest() {
         userDbStorage.addUser(user2);
-        userDbStorage.addUser(user3);
+        userDbStorage.addUser(user1);
         Collection<User> dbUsers = userDbStorage.getAllUsers();
         assertEquals(2, dbUsers.size());
     }
@@ -74,7 +75,7 @@ public class UserDbStorageTest {
     void deleteUser() {
         Collection<User> countUsers = userDbStorage.getAllUsers();
         userDbStorage.deleteUser(user1);
-        Collection<User> countUsersBefore = userDbStorage.getAllUsers();
-        assertEquals(countUsers.size() - 1, countUsersBefore.size());
+        Collection<User> countUsersAfter = userDbStorage.getAllUsers();
+        assertEquals(countUsers.size() - 1, countUsersAfter.size());
     }
 }

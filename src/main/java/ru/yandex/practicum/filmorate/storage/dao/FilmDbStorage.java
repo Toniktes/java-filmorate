@@ -90,18 +90,12 @@ public class FilmDbStorage implements FilmStorage {
         Film film;
         try {
             film = jdbcTemplate.queryForObject(sqlFilm, (rs, rowNum) -> getFilmDb(rs), filmId);
-        }
-        catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Фильм с идентификатором " +
                     filmId + " не зарегистрирован!");
         }
         log.info("Найден фильм: {} {}", filmId, film.getName());
         return film;
-    }
-
-    @Override
-    public Map<Integer, Film> filmMap() {
-        return null;
     }
 
     @Override
@@ -130,7 +124,7 @@ public class FilmDbStorage implements FilmStorage {
             genreService.addFilmGenres(film.getId(), film.getGenres());
         }
 
-        if(film.getLikes() != null) {
+        if (film.getLikes() != null) {
             for (Integer userId : film.getLikes()) {
                 addLike(film.getId(), userId);
             }

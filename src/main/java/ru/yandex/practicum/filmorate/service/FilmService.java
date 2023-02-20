@@ -82,15 +82,6 @@ public class FilmService {
     }
 
     private void validateLike(int filmId, int userId) {
-        /*if (!filmStorage.filmMap().containsKey(filmId)) {
-            throw new NotFoundException("Фильм с идентификатором " +
-                    filmId + " не найден!");
-        }
-        if (!userStorage.userMap().containsKey(userId)) {
-            throw new NotFoundException("Пользователь с идентификатором " +
-                    filmId + " не найден!");
-        }*/
-
         Optional.ofNullable(filmStorage.getFilm(filmId))
                 .orElseThrow(() -> new NotFoundException("Фильм с идентификатором " + filmId + " не зарегистрирован!"));
         Optional.ofNullable(userStorage.getUser(userId))

@@ -27,11 +27,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Map<Integer, Film> filmMap() {
-        return films;
-    }
-
-    @Override
     public Collection<Film> getAllFilms() {
         Collection<Film> allFilms = films.values();
         if (allFilms.isEmpty()) {

@@ -106,15 +106,6 @@ public class UserService {
     }
 
     private void validateId(int userId, int friendId) {
-       /* if (!userStorage.userMap().containsKey(userId)) {
-            throw new NotFoundException("Пользователь с идентификатором " +
-                    userId + " не найден!");
-        }
-        if (!userStorage.userMap().containsKey(friendId)) {
-            throw new NotFoundException("Пользователь с идентификатором " +
-                    friendId + " не найден!");
-        }*/
-
         Optional.ofNullable(userStorage.getUser(userId))
                 .orElseThrow(() -> new NotFoundException("Пользователь с идентификатором " + userId + " не зарегистрирован!"));
         Optional.ofNullable(userStorage.getUser(friendId))

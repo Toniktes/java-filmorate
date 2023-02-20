@@ -23,6 +23,7 @@ public class GenreDbStorage implements GenreStorage {
     private Genre getGenre(ResultSet resultSet, int rowNum) throws SQLException {
         return new Genre(resultSet.getInt("GenreID"), resultSet.getString("Name"));
     }
+
     @Override
     public Collection<Genre> getAllGenres() {
         String sqlGenre = "select GENREID, NAME from GENRE ORDER BY GENREID";
@@ -43,8 +44,7 @@ public class GenreDbStorage implements GenreStorage {
         Genre genre;
         try {
             genre = jdbcTemplate.queryForObject(sqlGenre, this::getGenre, genreId);
-        }
-        catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Жанр с идентификатором " +
                     genreId + " не зарегистрирован!");
         }

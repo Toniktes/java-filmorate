@@ -10,8 +10,6 @@ public interface FilmStorage {
 
     Film getFilm(int filmId);
 
-    Map<Integer, Film> filmMap();
-
     Collection<Film> getAllFilms();
 
     Film updateFilm(Film film);

@@ -78,11 +78,6 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Map<Integer, User> userMap() {
-        return null;
-    }
-
-    @Override
     public Collection<User> getAllUsers() {
         String sql = "select * from USERS";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> getUserDb(resultSet));
