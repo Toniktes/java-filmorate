@@ -21,7 +21,7 @@ public class FilmService {
     private int generatorId = 0;
 
     @Autowired
-    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, @Qualifier("UserDbStorage") UserStorage userStorage) {
+    public FilmService(@Qualifier("filmDbBean") FilmStorage filmStorage, @Qualifier("userDbBean") UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }

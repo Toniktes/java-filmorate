@@ -25,7 +25,7 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Collection<Genre> getAllGenres() {
+    public List<Genre> getAllGenres() {
         String sqlGenre = "select GENREID, NAME from GENRE ORDER BY GENREID";
         return jdbcTemplate.query(sqlGenre, this::getGenre);
     }
@@ -34,7 +34,7 @@ public class GenreDbStorage implements GenreStorage {
     public List<Genre> getGenresByFilmId(int filmId) {
         String sqlGenre = "select GENRE.GENREID, NAME from GENRE " +
                 "INNER JOIN GENRELINE GL on GENRE.GENREID = GL.GENREID " +
-                "where FILMID = ?";
+                "where Film_id = ?";
         return jdbcTemplate.query(sqlGenre, this::getGenre, filmId);
     }
 
@@ -52,19 +52,17 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public boolean deleteFilmGenres(int filmId) {
-        String deleteGenres = "delete from GENRELINE where FILMID = ?";
+    public void deleteFilmGenres(int filmId) {
+        String deleteGenres = "delete from GENRELINE where Film_id = ?";
         jdbcTemplate.update(deleteGenres, filmId);
-        return true;
     }
 
     @Override
-    public boolean addFilmGenres(int filmId, Collection<Genre> genres) {
+    public void addFilmGenres(int filmId, List<Genre> genres) {
         Set<Genre> setGenre = new LinkedHashSet<>(genres);
         for (Genre genre : setGenre) {
-            String addGenres = "insert into GenreLine (FilmID, GenreID) values (?,?)";
+            String addGenres = "insert into GenreLine (Film_id, GenreID) values (?,?)";
             jdbcTemplate.update(addGenres, filmId, genre.getId());
         }
-        return true;
     }
 }

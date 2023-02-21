@@ -16,11 +16,10 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.sql.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Component("FilmDbStorage")
+@Component("filmDbBean")
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
@@ -31,31 +30,10 @@ public class FilmDbStorage implements FilmStorage {
         this.genreService = genreService;
     }
 
-    private Film getFilmDb(ResultSet resultSet) throws SQLException {
-        int filmId = resultSet.getInt("FilmID");
-        return new Film(
-                filmId,
-                resultSet.getString("Name"),
-                resultSet.getString("Description"),
-                Objects.requireNonNull(resultSet.getDate("ReleaseDate")).toLocalDate(),
-                resultSet.getLong("Duration"),
-                resultSet.getInt("Rate"),
-                new Mpa(resultSet.getInt("RatingMPA.RatingID"),
-                        resultSet.getString("RatingMPA.Name"),
-                        resultSet.getString("RatingMPA.Description")),
-                getFilmLikes(filmId),
-                genreService.getFilmGenres(filmId));
-    }
-
-    private List<Integer> getFilmLikes(int filmId) {
-        String sqlGetLikes = "select USERID from LIKES where FILMID = ?";
-        return jdbcTemplate.queryForList(sqlGetLikes, Integer.class, filmId);
-    }
-
     @Override
     public Film addFilm(Film film) {
         String sqlQuery = "insert into FILM " +
-                "(NAME, DESCRIPTION, RELEASEDATE, DURATION, RATE, RATINGID) " +
+                "(NAME, DESCRIPTION, RELEASEDATE, DURATION, RATE, Rating_id) " +
                 "values (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -75,9 +53,7 @@ public class FilmDbStorage implements FilmStorage {
             genreService.addFilmGenres(film.getId(), film.getGenres());
         }
         if (!film.getLikes().isEmpty()) {
-            for (Integer userId : film.getLikes()) {
-                addLike(film.getId(), userId);
-            }
+            film.getLikes().forEach(num -> addLike(film.getId(), num));
         }
         return getFilm(id);
     }
@@ -85,8 +61,8 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getFilm(int filmId) {
         String sqlFilm = "select * from FILM " +
-                "INNER JOIN RATINGMPA R on FILM.RATINGID = R.RATINGID " +
-                "where FILMID = ?";
+                "INNER JOIN RATINGMPA R on FILM.Rating_id = R.Rating_id " +
+                "where Film_id = ?";
         Film film;
         try {
             film = jdbcTemplate.queryForObject(sqlFilm, (rs, rowNum) -> getFilmDb(rs), filmId);
@@ -101,15 +77,49 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Collection<Film> getAllFilms() {
         String sql = "select * from FILM " +
-                "INNER JOIN RATINGMPA R on FILM.RATINGID = R.RATINGID ";
+                "INNER JOIN RATINGMPA R on FILM.Rating_id = R.Rating_id ";
         return jdbcTemplate.query(sql, (resultSet, rowNum) -> getFilmDb(resultSet));
+    }
+
+    @Override
+    public Collection<Film> getMostPopularFilms(int size) {
+        String sqlMostPopular = "select count(L.Like_id) as likeRate" +
+                ",FILM.Film_id" +
+                ",FILM.NAME ,FILM.DESCRIPTION ,RELEASEDATE ,DURATION ,RATE ,R.Rating_id, R.NAME, R.DESCRIPTION from FILM " +
+                "left join LIKES L on L.Film_id = FILM.Film_id " +
+                "inner join RATINGMPA R on R.Rating_id = FILM.Rating_id " +
+                "group by FILM.Film_id " +
+                "ORDER BY likeRate desc " +
+                "limit ?";
+        return jdbcTemplate.query(sqlMostPopular, (rs, rowNum) -> getFilmDb(rs), size);
+    }
+
+    private Film getFilmDb(ResultSet resultSet) throws SQLException {
+        int filmId = resultSet.getInt("Film_id");
+        return new Film(
+                filmId,
+                resultSet.getString("Name"),
+                resultSet.getString("Description"),
+                Objects.requireNonNull(resultSet.getDate("ReleaseDate")).toLocalDate(),
+                resultSet.getLong("Duration"),
+                resultSet.getInt("Rate"),
+                new Mpa(resultSet.getInt("RatingMPA.Rating_id"),
+                        resultSet.getString("RatingMPA.Name"),
+                        resultSet.getString("RatingMPA.Description")),
+                getFilmLikes(filmId),
+                genreService.getFilmGenres(filmId));
+    }
+
+    private List<Integer> getFilmLikes(int filmId) {
+        String sqlGetLikes = "select User_id from LIKES where Film_id = ?";
+        return jdbcTemplate.queryForList(sqlGetLikes, Integer.class, filmId);
     }
 
     @Override
     public Film updateFilm(Film film) {
         String sqlQuery = "update FILM " +
-                "set NAME = ?, DESCRIPTION = ?, RELEASEDATE = ?, DURATION = ?, RATE = ? ,RATINGID = ? " +
-                "where FILMID = ?";
+                "set NAME = ?, DESCRIPTION = ?, RELEASEDATE = ?, DURATION = ?, RATE = ? ,Rating_id = ? " +
+                "where Film_id = ?";
         jdbcTemplate.update(sqlQuery,
                 film.getName(),
                 film.getDescription(),
@@ -125,50 +135,33 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         if (film.getLikes() != null) {
-            for (Integer userId : film.getLikes()) {
-                addLike(film.getId(), userId);
-            }
+            film.getLikes().forEach(num -> addLike(film.getId(), num));
         }
         return getFilm(film.getId());
     }
 
     @Override
-    public boolean deleteFilm(Film film) {
-        String sqlQuery = "delete from FILM where FILMID = ?";
+    public void deleteFilm(Film film) {
+        String sqlQuery = "delete from FILM where Film_id = ?";
         jdbcTemplate.update(sqlQuery, film.getId());
-        return true;
     }
 
     @Override
-    public boolean addLike(int filmId, int userId) {
-        String sql = "select * from LIKES where USERID = ? and FILMID = ?";
+    public void addLike(int filmId, int userId) {
+        String sql = "select * from LIKES where User_id = ? and Film_id = ?";
         SqlRowSet existLike = jdbcTemplate.queryForRowSet(sql, userId, filmId);
         if (!existLike.next()) {
-            String setLike = "insert into LIKES (USERID, FILMID) values (?, ?) ";
+            String setLike = "insert into LIKES (User_id, Film_id) values (?, ?) ";
             jdbcTemplate.update(setLike, userId, filmId);
         }
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, userId, filmId);
         log.info(String.valueOf(sqlRowSet.next()));
-        return sqlRowSet.next();
+        sqlRowSet.next();
     }
 
     @Override
-    public boolean deleteLike(int filmId, int userId) {
-        String deleteLike = "delete from LIKES where FILMID = ? and USERID = ?";
+    public void deleteLike(int filmId, int userId) {
+        String deleteLike = "delete from LIKES where Film_id = ? and User_id = ?";
         jdbcTemplate.update(deleteLike, filmId, userId);
-        return true;
-    }
-
-    @Override
-    public Collection<Film> getMostPopularFilms(int size) {
-        String sqlMostPopular = "select count(L.LIKEID) as likeRate" +
-                ",FILM.FILMID" +
-                ",FILM.NAME ,FILM.DESCRIPTION ,RELEASEDATE ,DURATION ,RATE ,R.RATINGID, R.NAME, R.DESCRIPTION from FILM " +
-                "left join LIKES L on L.FILMID = FILM.FILMID " +
-                "inner join RATINGMPA R on R.RATINGID = FILM.RATINGID " +
-                "group by FILM.FILMID " +
-                "ORDER BY likeRate desc " +
-                "limit ?";
-        return jdbcTemplate.query(sqlMostPopular, (rs, rowNum) -> getFilmDb(rs), size);
     }
 }

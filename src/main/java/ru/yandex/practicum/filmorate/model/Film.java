@@ -22,7 +22,7 @@ public class Film {
     private Mpa mpa;
 
     private List<Integer> likes = new ArrayList<>();
-    private Collection<Genre> genres = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
 
     public void addLike(Integer userId) {
         likes.add(userId);

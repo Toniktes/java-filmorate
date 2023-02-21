@@ -20,7 +20,7 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     private Mpa getMpa(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Mpa(resultSet.getInt("RatingID"),
+        return new Mpa(resultSet.getInt("Rating_id"),
                 resultSet.getString("Name"),
                 resultSet.getString("Description"));
     }
@@ -33,7 +33,7 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public Mpa getMpaById(int mpaId) {
-        String sqlMpa = "select * from RATINGMPA where RATINGID = ?";
+        String sqlMpa = "select * from RATINGMPA where Rating_id = ?";
         Mpa mpa;
         try {
             mpa = jdbcTemplate.queryForObject(sqlMpa, this::getMpa, mpaId);

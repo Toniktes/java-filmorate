@@ -4,13 +4,13 @@ DELETE FROM FriendList;
 DELETE FROM Users;
 DELETE FROM Film;
 
-ALTER TABLE Users ALTER COLUMN UserID RESTART WITH 1;
-ALTER TABLE Film ALTER COLUMN FilmID RESTART WITH 1;
+ALTER TABLE Users ALTER COLUMN User_id RESTART WITH 1;
+ALTER TABLE Film ALTER COLUMN Film_id RESTART WITH 1;
 ALTER TABLE FriendList ALTER COLUMN FriendListId RESTART WITH 1;
 ALTER TABLE GenreLine ALTER COLUMN GenreLineID RESTART WITH 1;
-ALTER TABLE Likes ALTER COLUMN LikeID RESTART WITH 1;
+ALTER TABLE Likes ALTER COLUMN Like_id RESTART WITH 1;
 
-MERGE INTO RatingMPA KEY(RatingID)
+MERGE INTO RatingMPA KEY(Rating_id)
     VALUES (1, 'G', 'У фильма нет возрастных ограничений'),
            (2, 'PG', 'Детям рекомендуется смотреть фильм с родителями'),
            (3, 'PG-13', 'Детям до 13 лет просмотр не желателен'),

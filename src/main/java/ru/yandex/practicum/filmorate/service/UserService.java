@@ -22,7 +22,7 @@ public class UserService {
     private int generatorId = 0;
 
     @Autowired
-    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
+    public UserService(@Qualifier("userDbBean") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
