@@ -1,8 +1,9 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,11 +25,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Map<Integer, User> userMap() {
-        return users;
-    }
-
-    @Override
     public Collection<User> getAllUsers() {
         Collection<User> allUsers = users.values();
         if (allUsers.isEmpty()) {
@@ -47,31 +43,28 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean deleteUser(User user) {
+    public void deleteUser(User user) {
         users.remove(user.getId());
-        return true;
     }
 
     @Override
-    public boolean addFriend(int userId, int friendId) {
+    public void addFriend(int userId, int friendId) {
         User user = users.get(userId);
         User friend = users.get(friendId);
         user.addFriend(friendId);
         friend.addFriend(userId);
         updateUser(user);
         updateUser(friend);
-        return true;
     }
 
     @Override
-    public boolean deleteFriend(int userId, int friendId) {
+    public void deleteFriend(int userId, int friendId) {
         User user = users.get(userId);
         User friend = users.get(friendId);
         user.deleteFriend(friendId);
         friend.deleteFriend(userId);
         updateUser(user);
         updateUser(friend);
-        return true;
     }
 }
 

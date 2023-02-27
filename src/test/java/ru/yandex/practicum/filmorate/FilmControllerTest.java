@@ -23,47 +23,47 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class FilmControllerTest {
-        @Autowired
-        private MockMvc mockMvc;
-        @Autowired
-        private ObjectMapper objectMapper;
-        @MockBean
-        private FilmController filmController;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @MockBean
+    private FilmController filmController;
 
-        @Test
-        void shouldReturn200whenGetFilms() throws Exception {
-            Film film = Film.builder()
-                    .id(1)
-                    .name("Kyle Reese")
-                    .description("terminatormail@")
-                    .releaseDate(LocalDate.of(2000, 8,20))
-                    .duration(100)
-                    .rate(4)
-                    .build();
-            Mockito.when(filmController.findAll()).thenReturn(Collections.singletonList(film));
-            mockMvc.perform(get("/films"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(objectMapper.writeValueAsString(Collections.singletonList(film))));
-        }
-
-        @Test
-        void shouldReturn200whenPostCorrectFilmData() throws Exception {
-            Film film = Film.builder()
-                    .id(1)
-                    .name("Kyle Reese")
-                    .description("terminatormail@")
-                    .releaseDate(LocalDate.of(2000, 8,20))
-                    .duration(100)
-                    .rate(4)
-                    .build();
-            Mockito.when(filmController.create(Mockito.any())).thenReturn(film);
-            mockMvc.perform(post("/films")
-                            .content(objectMapper.writeValueAsString(film))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(objectMapper.writeValueAsString(film)));
-        }
+    @Test
+    void shouldReturn200whenGetFilms() throws Exception {
+        Film film = Film.builder()
+                .id(1)
+                .name("Kyle Reese")
+                .description("terminatormail@")
+                .releaseDate(LocalDate.of(2000, 8, 20))
+                .duration(100)
+                .rate(4)
+                .build();
+        Mockito.when(filmController.findAll()).thenReturn(Collections.singletonList(film));
+        mockMvc.perform(get("/films"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(Collections.singletonList(film))));
     }
+
+    @Test
+    void shouldReturn200whenPostCorrectFilmData() throws Exception {
+        Film film = Film.builder()
+                .id(1)
+                .name("Kyle Reese")
+                .description("terminatormail@")
+                .releaseDate(LocalDate.of(2000, 8, 20))
+                .duration(100)
+                .rate(4)
+                .build();
+        Mockito.when(filmController.create(Mockito.any())).thenReturn(film);
+        mockMvc.perform(post("/films")
+                        .content(objectMapper.writeValueAsString(film))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(film)));
+    }
+}
     /*FilmController filmController;
     Film film;
 

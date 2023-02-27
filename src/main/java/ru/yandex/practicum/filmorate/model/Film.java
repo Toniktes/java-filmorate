@@ -4,8 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,8 +19,10 @@ public class Film {
     @Positive
     private long duration;
     private int rate;
+    private Mpa mpa;
 
-    private Set<Integer> likes = new HashSet<>();
+    private List<Integer> likes = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
 
     public void addLike(Integer userId) {
         likes.add(userId);

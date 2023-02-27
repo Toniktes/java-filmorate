@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserControllerTest {
@@ -41,7 +42,7 @@ class UserControllerTest {
                 .name("Kyle Reese")
                 .email("ff@yandex.ru")
                 .login("KReese")
-                .birthday(LocalDate.of(2000, 8,20))
+                .birthday(LocalDate.of(2000, 8, 20))
                 .build();
         Mockito.when(userController.findAll()).thenReturn(Collections.singletonList(user));
         mockMvc.perform(get("/users"))
@@ -56,7 +57,7 @@ class UserControllerTest {
                 .name("Kyle Reese")
                 .email("ff@yandex.ru")
                 .login("KReese")
-                .birthday(LocalDate.of(2000, 8,20))
+                .birthday(LocalDate.of(2000, 8, 20))
                 .build();
         Mockito.when(userController.create(Mockito.any())).thenReturn(user);
         mockMvc.perform(post("/users")
